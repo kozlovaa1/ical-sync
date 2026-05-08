@@ -57,6 +57,7 @@ docker compose -f docker-compose.yml -f docker-compose.traefik.yml up -d --build
 | `traefik.http.routers.ical-proxy.rule` | `Host(\`${TRAEFIK_HOST}\`)` |
 | `traefik.http.routers.ical-proxy.entrypoints` | `websecure` |
 | `traefik.http.routers.ical-proxy.tls` | `true` |
+| `traefik.http.routers.ical-proxy.tls.certresolver` | `${TRAEFIK_CERTRESOLVER:-le}` |
 | `traefik.http.services.ical-proxy.loadbalancer.server.port` | `${PORT:-3000}` |
 
 Перед запуском проверьте имя внешней Traefik-сети:

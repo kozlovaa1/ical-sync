@@ -11,6 +11,7 @@
 | `PORT` | Нет | `3000` | integer `>= 1` | Внутренний HTTP-порт приложения (в контейнере и локальном Node.js запуске) |
 | `HOST_PORT` | Нет | `3000` | integer `>= 1` | Host-порт публикации в `docker-compose.yml` (`HOST_PORT:PORT`) |
 | `TRAEFIK_HOST` | Нет | `ical-sync.ak-net.ru` | валидный DNS host | Опциональный домен для Traefik overlay (`docker-compose.traefik.yml`) |
+| `TRAEFIK_CERTRESOLVER` | Нет | `le` | непустая строка | Имя Traefik ACME resolver для автоматических Let's Encrypt сертификатов |
 | `LOG_LEVEL` | Нет | `info` | `debug`, `info`, `warn`, `error`; неизвестное значение становится `info` | Уровень JSON-логов |
 | `PUBLIC_TOKEN` | Да | - | минимум 32 символа; только `A-Z`, `a-z`, `0-9`, `_`, `-` | Token в calendar URL |
 | `ICAL_URL` | Да | - | валидный абсолютный URL | Upstream iCal endpoint |

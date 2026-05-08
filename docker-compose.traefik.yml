@@ -8,6 +8,7 @@ services:
       - traefik.http.routers.ical-proxy.rule=Host(`${TRAEFIK_HOST:-ical-sync.ak-net.ru}`)
       - traefik.http.routers.ical-proxy.entrypoints=websecure
       - traefik.http.routers.ical-proxy.tls=true
+      - traefik.http.routers.ical-proxy.tls.certresolver=${TRAEFIK_CERTRESOLVER:-le}
       - traefik.http.services.ical-proxy.loadbalancer.server.port=${PORT:-3000}
 
 networks:
