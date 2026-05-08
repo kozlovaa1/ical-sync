@@ -1,5 +1,10 @@
-node_modules/
-dist/
-.env
-npm-debug.log*
+node_modules
+dist
+coverage
+.vite
+*.log
+
+.claude
+.codex
+.ai-factory.json
 .ai-factory/PLAN.md
