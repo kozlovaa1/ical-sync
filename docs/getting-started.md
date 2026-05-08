@@ -8,7 +8,7 @@
 
 | Инструмент | Требование |
 |------------|------------|
-| Node.js | `>=20` по `package.json` |
+| Node.js | `22 LTS` или более новый LTS runtime по `package.json` |
 | npm | Версия, совместимая с `package-lock.json` |
 | curl | Для ручной проверки HTTP endpoints |
 

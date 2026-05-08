@@ -8,12 +8,12 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
-    "test": "vitest run",
+    "test": "vitest run --cache=false",
     "test:watch": "vitest",
     "check:compose-ports": "bash scripts/check-compose-ports.sh"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
     "fastify": "^5.1.0"

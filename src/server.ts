@@ -20,6 +20,7 @@ const start = async (): Promise<void> => {
     const logger = createLogger("app", config.logLevel);
 
     logger.info("environment loaded", {
+      nodeVersion: process.version,
       port: config.port,
       cacheTtlSeconds: config.cacheTtlSeconds,
       requestTimeoutMs: config.requestTimeoutMs,
@@ -38,6 +39,7 @@ const start = async (): Promise<void> => {
     });
 
     logger.info("server started", {
+      nodeVersion: process.version,
       host: "0.0.0.0",
       port: config.port,
     });

@@ -2,7 +2,7 @@
 
 # Deployment
 
-Контейнер собирает TypeScript в `dist/` и запускает `node dist/server.js`. Возможны два режима: standalone (без Traefik) и production overlay с Traefik.
+Контейнер собирает TypeScript в `dist/` и запускает `node dist/server.js` в runtime `Node.js 22 LTS`. Возможны два режима: standalone (без Traefik) и production overlay с Traefik.
 
 ## Docker Image
 
@@ -10,8 +10,8 @@
 
 | Stage | Назначение |
 |-------|------------|
-| `build` | `npm ci`, копирование `src/`, `npm run build` |
-| `runtime` | `npm ci --omit=dev`, копирование `dist/`, запуск Node |
+| `build` | `node:22-alpine`, `npm ci`, копирование `src/`, `npm run build` |
+| `runtime` | `node:22-alpine`, `npm ci --omit=dev`, копирование `dist/`, запуск Node |
 
 Runtime image слушает порт `3000`.
 

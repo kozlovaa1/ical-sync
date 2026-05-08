@@ -9,6 +9,8 @@
 
 ### Node.js (local)
 
+Требуется `Node.js 22 LTS` или более новый LTS runtime (`package.json` задает минимальную версию `>=22`).
+
 ```bash
 cp .env.example .env
 npm install
