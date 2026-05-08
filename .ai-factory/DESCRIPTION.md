@@ -15,7 +15,7 @@
 - **ORM:** Не требуется
 - **Интеграции:** Внешний запароленный календарный сервис (по HTTP/HTTPS)
 - **Тесты:** Vitest
-- **Деплой:** Docker + Docker Compose + Traefik (HTTPS)
+- **Деплой:** Docker + Docker Compose (standalone) с optional Traefik overlay для HTTPS/домена
 
 ## Архитектурные заметки
 Реализовано разделение на HTTP-слой (`src/http/routes.ts`), сервисный слой (`src/services/calendar-service.ts`), интеграционный слой (`src/integrations/calendar-source.ts`), слой валидации iCal (`src/ical/validate-calendar.ts`) и слой конфигурации/логирования (`src/config/env.ts`, `src/observability/logger.ts`). Секреты хранятся только в переменных окружения.

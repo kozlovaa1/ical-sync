@@ -12,7 +12,7 @@
 | npm | Версия, совместимая с `package-lock.json` |
 | curl | Для ручной проверки HTTP endpoints |
 
-Для production-запуска также нужны Docker, Docker Compose и внешняя Traefik-сеть. Подробности: [Deployment](deployment.md).
+Для контейнерного запуска нужен Docker + Docker Compose. Traefik нужен только для production-домена/HTTPS-режима. Подробности: [Deployment](deployment.md).
 
 ## Установка
 
@@ -47,6 +47,18 @@ npm start
 npm run dev
 ```
 
+## Docker (standalone)
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+docker logs -f ical-proxy
+```
+
+По умолчанию standalone-публикация: `http://127.0.0.1:3000`. В `.env`:
+- `PORT` — внутренний порт приложения в контейнере
+- `HOST_PORT` — опубликованный host-порт Docker Compose
+
 ## Проверка
 
 ```bash
@@ -69,10 +81,12 @@ curl -i http://127.0.0.1:3000/calendar/YOUR_PUBLIC_TOKEN.ics
 
 1. Откройте Google Calendar.
 2. Выберите «Другие календари» → «Добавить по URL».
-3. Вставьте `https://ical-sync.ak-net.ru/calendar/<PUBLIC_TOKEN>.ics`.
+3. Вставьте `http://127.0.0.1:3000/calendar/<PUBLIC_TOKEN>.ics` (или ваш production HTTPS URL за Traefik).
 4. Сохраните подписку.
 
 Google Calendar обновляет внешние iCal-подписки с задержкой; изменение upstream-календаря обычно не появляется мгновенно.
+
+Полный calendar URL с `<PUBLIC_TOKEN>` считается секретом — не публикуйте его в логах, скриншотах и публичных каналах.
 
 ## See Also
 

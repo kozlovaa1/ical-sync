@@ -7,17 +7,5 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    networks:
-      - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik_default
-      - traefik.http.routers.ical-proxy.rule=Host(`ical-sync.ak-net.ru`)
-      - traefik.http.routers.ical-proxy.entrypoints=websecure
-      - traefik.http.routers.ical-proxy.tls=true
-      - traefik.http.services.ical-proxy.loadbalancer.server.port=3000
-
-networks:
-  traefik:
-    external: true
-    name: traefik_default
+    ports:
+      - "${HOST_PORT:-3000}:${PORT:-3000}"

@@ -1,10 +1,13 @@
 # iCal Sync Proxy
+[![CI](https://github.com/kozlovaa1/ical-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/kozlovaa1/ical-sync/actions/workflows/ci.yml)
 
 > Минимальный Fastify-прокси для выдачи защищенного upstream-календаря как iCal (`.ics`).
 
 Сервис скрывает upstream-учетные данные, проверяет публичный токен в URL и отдает календарь в формате `text/calendar`. Он подходит для подписки внешних календарных клиентов на приватный iCal-источник без передачи им upstream-логина и пароля.
 
 ## Quick Start
+
+### Node.js (local)
 
 ```bash
 cp .env.example .env
@@ -14,6 +17,16 @@ npm start
 ```
 
 Перед запуском заполните `.env`: `PUBLIC_TOKEN`, `ICAL_URL`, `ICAL_USERNAME`, `ICAL_PASSWORD`. `PUBLIC_TOKEN` должен быть URL-safe и не короче 32 символов.
+
+### Docker Compose (standalone, без Traefik)
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+docker logs -f ical-proxy
+```
+
+По умолчанию сервис доступен на `http://127.0.0.1:3000`. Для публикации на другом порту задайте `HOST_PORT` в `.env`. `PORT` остается внутренним портом приложения внутри контейнера.
 
 ## Ключевые возможности
 
@@ -40,14 +53,20 @@ curl -i http://127.0.0.1:3000/calendar/YOUR_PUBLIC_TOKEN.ics
 | `GET /calendar/wrong-token.ics` | `404`, `{ "message": "Not Found" }` |
 | `GET /calendar/YOUR_PUBLIC_TOKEN.ics` | `200`, `Content-Type: text/calendar; charset=utf-8` |
 
-## Публичный endpoint
+## Endpoint examples
 
 | Назначение | URL |
 |------------|-----|
-| Health | `https://ical-sync.ak-net.ru/health` |
-| Calendar | `https://ical-sync.ak-net.ru/calendar/<PUBLIC_TOKEN>.ics` |
+| Health | `http://127.0.0.1:3000/health` |
+| Calendar | `http://127.0.0.1:3000/calendar/<PUBLIC_TOKEN>.ics` |
 
 Весь calendar URL с токеном является секретом. Не публикуйте его и не сохраняйте в открытых логах.
+
+Для production с HTTPS и доменом используйте Traefik overlay:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.traefik.yml up -d --build
+```
 
 ## Документация
 
@@ -62,4 +81,4 @@ curl -i http://127.0.0.1:3000/calendar/YOUR_PUBLIC_TOKEN.ics
 
 ## License
 
-Проект приватный (`private: true` в `package.json`); публичная лицензия не указана.
+MIT — см. [LICENSE](LICENSE).

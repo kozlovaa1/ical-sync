@@ -11,7 +11,7 @@
 - **База данных:** Не требуется
 - **ORM:** Не требуется
 - **Тесты:** Vitest
-- **Деплой:** Docker Compose + Traefik
+- **Деплой:** Docker Compose (standalone) + optional Traefik overlay
 
 ## Структура проекта
 ```text
@@ -30,7 +30,8 @@
 ├── test/                        # Unit/route тесты Vitest
 ├── docs/                        # Пользовательская документация
 ├── Dockerfile                   # Production image build/run
-├── docker-compose.yml           # Compose + Traefik routing
+├── docker-compose.yml           # Базовый standalone Compose
+├── docker-compose.traefik.yml   # Optional Traefik overlay (domain/HTTPS)
 ├── README.md                    # Landing page проекта
 ├── package.json                 # Node scripts/dependencies
 ├── tsconfig.json                # TypeScript build config
@@ -56,7 +57,7 @@
 | Architecture | `docs/architecture.md` | Структура и поток данных |
 | API Reference | `docs/api.md` | Endpoints и ответы |
 | Configuration | `docs/configuration.md` | Env-переменные и defaults |
-| Deployment | `docs/deployment.md` | Docker Compose и Traefik |
+| Deployment | `docs/deployment.md` | Standalone Compose и optional Traefik overlay |
 | Testing | `docs/testing.md` | Сборка и проверки |
 | AGENTS | `AGENTS.md` | Карта проекта для агентов |
 | Описание проекта | `.ai-factory/DESCRIPTION.md` | Предметная область и цели |

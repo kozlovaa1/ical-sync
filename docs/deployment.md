@@ -2,7 +2,7 @@
 
 # Deployment
 
-Production-запуск рассчитан на Docker Compose за Traefik. Контейнер собирает TypeScript в `dist/` и запускает `node dist/server.js`.
+Контейнер собирает TypeScript в `dist/` и запускает `node dist/server.js`. Возможны два режима: standalone (без Traefik) и production overlay с Traefik.
 
 ## Docker Image
 
@@ -15,17 +15,17 @@ Production-запуск рассчитан на Docker Compose за Traefik. К�
 
 Runtime image слушает порт `3000`.
 
-## Compose Service
+## Standalone Compose (без Traefik)
 
-Основной сервис в `docker-compose.yml`:
+Базовый сервис в `docker-compose.yml`:
 
 | Поле | Значение |
 |------|----------|
 | `container_name` | `ical-proxy` |
 | `env_file` | `.env` |
 | `restart` | `unless-stopped` |
-| `networks` | `traefik` |
-| internal port | `3000` |
+| `ports` | `${HOST_PORT:-3000}:${PORT:-3000}` |
+| internal port | `${PORT:-3000}` |
 
 Запуск:
 
@@ -41,17 +41,23 @@ docker logs -f ical-proxy
 
 В логах не должно быть `PUBLIC_TOKEN`, `ICAL_PASSWORD`, `Authorization` и тела календаря.
 
-## Traefik
+## Traefik Overlay (optional)
 
-Текущий route:
+Traefik-настройки вынесены в `docker-compose.traefik.yml` и подключаются вторым файлом:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.traefik.yml up -d --build
+```
+
+Параметры роутинга:
 
 | Label | Значение |
 |-------|----------|
 | `traefik.enable` | `true` |
-| `traefik.http.routers.ical-proxy.rule` | `Host(\`ical-sync.ak-net.ru\`)` |
+| `traefik.http.routers.ical-proxy.rule` | `Host(\`${TRAEFIK_HOST}\`)` |
 | `traefik.http.routers.ical-proxy.entrypoints` | `websecure` |
 | `traefik.http.routers.ical-proxy.tls` | `true` |
-| `traefik.http.services.ical-proxy.loadbalancer.server.port` | `3000` |
+| `traefik.http.services.ical-proxy.loadbalancer.server.port` | `${PORT:-3000}` |
 
 Перед запуском проверьте имя внешней Traefik-сети:
 
@@ -59,7 +65,7 @@ docker logs -f ical-proxy
 docker network ls
 ```
 
-Если сеть называется не `traefik_default`, синхронно обновите оба поля в `docker-compose.yml`:
+Если сеть называется не `traefik_default`, синхронно обновите оба поля в `docker-compose.traefik.yml`:
 
 | Поле | Где находится |
 |------|---------------|
@@ -73,8 +79,8 @@ docker network ls
 После деплоя проверьте:
 
 ```bash
-curl -i https://ical-sync.ak-net.ru/health
-curl -i https://ical-sync.ak-net.ru/calendar/wrong-token.ics
+curl -i http://127.0.0.1:${HOST_PORT:-3000}/health
+curl -i http://127.0.0.1:${HOST_PORT:-3000}/calendar/wrong-token.ics
 ```
 
 Ожидаемо:
@@ -85,6 +91,7 @@ curl -i https://ical-sync.ak-net.ru/calendar/wrong-token.ics
 | wrong token | `404`, `{ "message": "Not Found" }` |
 
 Valid calendar URL проверяйте аккуратно: полный URL содержит секретный `PUBLIC_TOKEN`.
+Для production через Traefik используйте тот же путь `/calendar/<PUBLIC_TOKEN>.ics` на вашем `TRAEFIK_HOST`.
 
 ## See Also
 

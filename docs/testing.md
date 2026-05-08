@@ -11,6 +11,7 @@
 | `npm run build` | Компиляция TypeScript через `tsc -p tsconfig.json` |
 | `npm test` | Однократный запуск Vitest |
 | `npm run test:watch` | Watch-режим Vitest |
+| `npm run check:compose-ports` | Регресс-проверка: `PORT`/`HOST_PORT` корректно попадают в Compose и Traefik overlay |
 
 ## Что покрыто тестами
 
@@ -47,6 +48,18 @@ curl -i http://127.0.0.1:3000/calendar/YOUR_PUBLIC_TOKEN.ics
 - `/calendar/wrong-token.ics` возвращает `404`;
 - valid calendar URL возвращает `text/calendar`;
 - в `docker logs -f ical-proxy` нет `PUBLIC_TOKEN`, `ICAL_PASSWORD`, `Authorization` и тела календаря.
+
+## Compose Regression Check
+
+Проверка нужна, чтобы не сломать маршрутизацию при нестандартном `PORT`:
+
+```bash
+npm run check:compose-ports
+```
+
+Скрипт проверяет:
+- base compose: `target` следует `PORT`, `published` следует `HOST_PORT`;
+- overlay compose: `traefik.http.services.ical-proxy.loadbalancer.server.port` следует `PORT`.
 
 ## See Also
 
