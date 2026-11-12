@@ -122,6 +122,24 @@ describe("calendar service cache behavior", () => {
     resetCalendarCache();
   });
 
+  it("caches and serves the normalized timezone", async () => {
+    const { logger } = createTestLogger();
+    const zone = (id: string) => `BEGIN:VTIMEZONE\nTZID:${id}\nEND:VTIMEZONE\n`;
+    const legacy = "Moscow, St.Petersburg, Volgograd";
+    const calendar = `BEGIN:VCALENDAR\n${zone("Europe/Moscow")}${zone(legacy)}` +
+      `BEGIN:VEVENT\nDTSTART;TZID="${legacy}":20261112T150000\nEND:VEVENT\nEND:VCALENDAR\n`;
+    const input = { token: baseConfig.publicToken, config: baseConfig, logger, fetchCalendar: async () => calendar };
+    const first = await getCalendar({ ...input, nowMs: 1000 });
+    const cached = await getCalendar({ ...input, nowMs: 2000 });
+    expect(first.kind).toBe("ok");
+    expect(cached.kind).toBe("ok");
+    if (first.kind === "ok" && cached.kind === "ok") {
+      expect(first.body).toContain("DTSTART;TZID=Europe/Moscow:20261112T150000");
+      expect(cached.body).toBe(first.body);
+      expect(cached.fromCache).toBe(true);
+    }
+  });
+
   it("returns not_found for invalid token", async () => {
     const { logger, entries } = createTestLogger();
 

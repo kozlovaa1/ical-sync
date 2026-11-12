@@ -5,6 +5,7 @@ import {
   type FetchCalendarInput,
 } from "../integrations/calendar-source";
 import { InvalidCalendarError, validateCalendar } from "../ical/validate-calendar";
+import { normalizeMoscowTimezone } from "../ical/normalize-timezone";
 import type { Logger } from "../observability/logger";
 
 type RefreshStatus = "success" | "failed" | "invalid";
@@ -105,21 +106,22 @@ export const getCalendar = async ({
       requestId,
     });
 
+    const normalized = normalizeMoscowTimezone(validated);
     cache = {
-      body: validated,
+      body: normalized,
       refreshedAtMs: nowMs,
       lastRefreshStatus: "success",
     };
 
     logger.info("calendar refresh succeeded", {
       requestId,
-      bodySizeBytes: Buffer.byteLength(validated, "utf8"),
+      bodySizeBytes: Buffer.byteLength(normalized, "utf8"),
       cacheAgeMs: 0,
     });
 
     return {
       kind: "ok",
-      body: validated,
+      body: normalized,
       stale: false,
       fromCache: false,
       refreshedAtMs: nowMs,
